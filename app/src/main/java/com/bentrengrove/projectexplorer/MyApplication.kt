@@ -6,6 +6,8 @@ import com.facebook.stetho.Stetho
 class MyApplication: Application() {
     override fun onCreate() {
         super.onCreate()
+
+        Data.setupApp()
         Stetho.initializeWithDefaults(this)
     }
 }
