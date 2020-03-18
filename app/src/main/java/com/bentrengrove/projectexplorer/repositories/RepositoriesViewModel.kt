@@ -33,7 +33,8 @@ class RepositoriesViewModel : ViewModel() {
 
             override fun onResponse(response: Response<RepositoriesQuery.Data>) {
                 Logger.d( "$response ${response.data()?.viewer?.name}")
-                val repositories = response.data()?.viewer?.repositories?.nodes?.filter { it?.projects?.totalCount != null && it.projects.totalCount > 0 }?.filterNotNull()
+                val nodes = response.data()?.viewer?.repositories?.nodes
+                val repositories = nodes?.filter { it?.projects?.totalCount != null && it.projects.totalCount > 0 }?.filterNotNull()
 
                 if (repositories != null) {
                     if (repositories.isNotEmpty()) {

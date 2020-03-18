@@ -31,7 +31,7 @@
     <fragment
         android:id="@+id/projectFragment"
         android:name="com.bentrengrove.projectexplorer.project.ProjectFragment"
-        android:label="ProjectFragment" >
+        android:label="{projectName}" >
         <argument
             android:name="ownerName"
             app:argType="string" />
@@ -41,5 +41,8 @@
         <argument
             android:name="number"
             app:argType="integer" />
+        <argument
+            android:name="projectName"
+            app:argType="string" />
     </fragment>
 </navigation>

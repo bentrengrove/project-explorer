@@ -63,7 +63,7 @@ class ProjectsFragment : Fragment() {
     }
 
     private fun itemSelected(project: ProjectSimpleItem) {
-        val action = ProjectsFragmentDirections.actionProjectsFragmentToProjectFragment(args.ownerName, args.repoName, project.number)
+        val action = ProjectsFragmentDirections.actionProjectsFragmentToProjectFragment(args.ownerName, args.repoName, project.number, project.title)
         findNavController().navigate(action)
     }
 }
