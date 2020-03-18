@@ -1,0 +1,15 @@
+query RepositoriesQuery($limit: Int!) {
+    viewer {
+        name
+        repositories(last: $limit) {
+            nodes {
+                id
+                name
+                owner {
+                    login
+                }
+                openGraphImageUrl
+            }
+        }
+    }
+}

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/repositoriesFragment">
+
+    <fragment
+        android:id="@+id/repositoriesFragment"
+        android:name="com.bentrengrove.projectexplorer.repositories.RepositoriesFragment"
+        android:label="@string/repositories_name"
+        tools:layout="@layout/simple_list_fragment" >
+        <action
+            android:id="@+id/action_repositoriesFragment_to_projectsFragment"
+            app:destination="@id/projectsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/projectsFragment"
+        android:name="com.bentrengrove.projectexplorer.projects.ProjectsFragment"
+        android:label="{ownerName}/{repoName}"
+        tools:layout="@layout/simple_list_fragment" >
+        <argument
+            android:name="ownerName"
+            app:argType="string" />
+        <argument android:name="repoName"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_projectsFragment_to_projectFragment"
+            app:destination="@id/projectFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/projectFragment"
+        android:name="com.bentrengrove.projectexplorer.project.ProjectFragment"
+        android:label="ProjectFragment" >
+        <argument
+            android:name="ownerName"
+            app:argType="string" />
+        <argument
+            android:name="repoName"
+            app:argType="string" />
+        <argument
+            android:name="number"
+            app:argType="integer" />
+    </fragment>
+</navigation>

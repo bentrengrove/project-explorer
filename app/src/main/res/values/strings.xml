@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">ProjectExplorer</string>
+    <string name="repositories_name">Repositories</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="projects_empty">This repository has no projects.</string>
+    <string name="repositories_empty">This account has no repositories.</string>
+    <string name="project_empty">This project has no content.</string>
+</resources>

@@ -1,0 +1,35 @@
+query ProjectQuery($owner: String!, $name: String!, $number: Int!, $limit: Int!){
+    repository(owner: $owner, name: $name) {
+        project(number: $number) {
+            columns(first: $limit) {
+                totalCount
+                nodes {
+                    id
+                    name
+                    cards(first: $limit) {
+                        nodes {
+                            id
+                            note
+                            content {
+                                ... on Issue {
+                                    title
+                                    body
+                                    url
+                                }
+                                ... on PullRequest {
+                                    title
+                                    body
+                                    url
+                                }
+                            }
+                            state
+                            creator {
+                                login
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
