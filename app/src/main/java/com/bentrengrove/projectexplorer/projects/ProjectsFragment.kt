@@ -38,7 +38,7 @@ class ProjectsFragment : Fragment() {
                     errorLayout.isVisible = false
                 }
                 is ProjectsViewState.Loaded -> {
-                    val items = state.projects.nodes?.mapNotNull { it?.toSimpleItem() }
+                    val items = state.projects.nodes?.mapNotNull { it?.toSimpleItem(recyclerView.context) }
                     adapter.submitList(items)
 
                     loadingProgress.isVisible = false

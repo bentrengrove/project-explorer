@@ -1,8 +1,13 @@
 package com.bentrengrove.projectexplorer.projects
 
+import android.content.Context
 import android.net.Uri
 import com.bentrengrove.ProjectsQuery
 import com.bentrengrove.projectexplorer.util.SimpleItem
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 data class ProjectSimpleItem(
     override val id: String,
@@ -10,8 +15,17 @@ data class ProjectSimpleItem(
     override val subtitle: String?,
     override val imageUri: Uri?,
     val number: Int
-) : SimpleItem
+) : SimpleItem {
+    companion object {
+        val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
+    }
+}
 
-fun ProjectsQuery.Node.toSimpleItem(): ProjectSimpleItem {
-    return ProjectSimpleItem(id, name, this.updatedAt.toString(), null, number)
+fun ProjectsQuery.Node.toSimpleItem(context: Context): ProjectSimpleItem {
+    val date = this.updatedAt as? Instant
+    val dateString = ProjectSimpleItem.dateFormatter
+        .withLocale(context.resources.configuration.locales.get(0))
+        .withZone(ZoneId.systemDefault())
+        .format(date)
+    return ProjectSimpleItem(id, name, "Updated: $dateString", null, number)
 }
