@@ -13,5 +13,5 @@ data class ProjectSimpleItem(
 ) : SimpleItem
 
 fun ProjectsQuery.Node.toSimpleItem(): ProjectSimpleItem {
-    return ProjectSimpleItem(id, name, this.number.toString(), null, this.number)
+    return ProjectSimpleItem(id, name, this.updatedAt.toString(), null, number)
 }

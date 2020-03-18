@@ -9,6 +9,7 @@ import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.bentrengrove.ProjectsQuery
 import com.bentrengrove.projectexplorer.Data
+import com.bentrengrove.projectexplorer.util.Logger
 
 sealed class ProjectsViewState {
     object Loading: ProjectsViewState()
@@ -24,15 +25,15 @@ class ProjectsViewModel: ViewModel() {
 
     fun setup(owner: String, repoName: String) {
         Data.apolloClient.query(
-            ProjectsQuery(owner, repoName)
+            ProjectsQuery(owner, repoName, 25)
         ).enqueue(object : ApolloCall.Callback<ProjectsQuery.Data>() {
             override fun onFailure(e: ApolloException) {
-                Log.e("Project", "Could not load projects", e)
+                Logger.e( "Could not load projects", e)
                 _projects.postValue(ProjectsViewState.Error(e))
             }
 
             override fun onResponse(response: Response<ProjectsQuery.Data>) {
-                Log.d("Project", "$response")
+                Logger.d( "$response")
                 val projects = response.data()?.repository?.projects
                 if (projects != null) {
                     if (projects.nodes?.isNotEmpty() == true) {

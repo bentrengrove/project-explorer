@@ -44,7 +44,7 @@ class RepositoriesFragment : Fragment(), CoroutineScope {
                     errorLayout.isVisible = false
                 }
                 is RepositoriesViewState.Loaded -> {
-                    val items = state.repositories.nodes?.mapNotNull { it?.toSimpleItem() }
+                    val items = state.repositories.map { it.toSimpleItem() }
                     adapter.submitList(items)
 
                     loadingProgress.isVisible = false

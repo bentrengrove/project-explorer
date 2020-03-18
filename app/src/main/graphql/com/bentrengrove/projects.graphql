@@ -1,13 +1,14 @@
-query ProjectsQuery($owner: String!, $name: String!) {
+query ProjectsQuery($owner: String!, $name: String!, $limit: Int!) {
     repository(owner: $owner, name: $name) {
         id
         name
-        projects(first: 5) {
+        projects(first: $limit) {
             totalCount
             nodes {
                 id
                 name
                 number
+                updatedAt
             }
         }
     }

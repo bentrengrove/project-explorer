@@ -9,6 +9,9 @@ query RepositoriesQuery($limit: Int!) {
                     login
                 }
                 openGraphImageUrl
+                projects {
+                    totalCount
+                }
             }
         }
     }
