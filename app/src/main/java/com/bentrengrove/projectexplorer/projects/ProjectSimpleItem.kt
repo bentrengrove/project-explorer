@@ -1,6 +1,6 @@
 package com.bentrengrove.projectexplorer.projects
 
-import android.content.Context
+import android.content.res.Resources
 import android.net.Uri
 import com.bentrengrove.ProjectsQuery
 import com.bentrengrove.projectexplorer.util.SimpleItem
@@ -21,10 +21,10 @@ data class ProjectSimpleItem(
     }
 }
 
-fun ProjectsQuery.Node.toSimpleItem(context: Context): ProjectSimpleItem {
+fun ProjectsQuery.Node.toSimpleItem(): ProjectSimpleItem {
     val date = this.updatedAt as? Instant
     val dateString = ProjectSimpleItem.dateFormatter
-        .withLocale(context.resources.configuration.locales.get(0))
+        .withLocale(Resources.getSystem().configuration.locales.get(0))
         .withZone(ZoneId.systemDefault())
         .format(date)
     return ProjectSimpleItem(id, name, "Updated: $dateString", null, number)

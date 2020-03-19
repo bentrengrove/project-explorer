@@ -9,10 +9,19 @@
     app:cardCornerRadius="8dp"
     app:cardElevation="4dp"
     app:cardBackgroundColor="?attr/colorSurface">
+    <ImageView
+        android:id="@+id/imgIcon"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="11dp"
+        android:src="@drawable/ic_error_outline_black_24dp"
+        android:tint="@color/issue_open" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:layout_marginStart="24dp"
         android:padding="8dp">
         <TextView
             android:id="@+id/lblBody"

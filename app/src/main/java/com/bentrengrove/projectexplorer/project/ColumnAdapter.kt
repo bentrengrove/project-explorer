@@ -1,8 +1,10 @@
 package com.bentrengrove.projectexplorer.project
 
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -10,7 +12,10 @@ import com.bentrengrove.ProjectQuery
 import com.bentrengrove.projectexplorer.R
 import io.noties.markwon.Markwon
 import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.card_issue_viewholder.view.*
 import kotlinx.android.synthetic.main.card_note_viewholder.view.*
+import kotlinx.android.synthetic.main.card_note_viewholder.view.lblBody
+import kotlinx.android.synthetic.main.card_note_viewholder.view.lblFooter
 import java.lang.IllegalStateException
 
 private val CARD_DIFF = object : DiffUtil.ItemCallback<ProjectQuery.Node1>() {
@@ -36,6 +41,13 @@ class ColumnAdapter(val markwon: Markwon, val onItemClick: (ProjectQuery.Node1)-
             val issue = item.content?.asIssue ?: return
             containerView.lblBody.text = issue.title
             containerView.lblFooter.text = "Added by ${item.creator?.login ?: "ghost"}"
+            if (issue.closed) {
+                containerView.imgIcon.setImageResource(R.drawable.ic_done_black_24dp)
+                containerView.imgIcon.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(containerView.context, R.color.issue_closed))
+            } else {
+                containerView.imgIcon.setImageResource(R.drawable.ic_error_outline_black_24dp)
+                containerView.imgIcon.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(containerView.context, R.color.issue_open))
+            }
         }
     }
 

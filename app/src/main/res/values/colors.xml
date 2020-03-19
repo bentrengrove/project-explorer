@@ -3,4 +3,6 @@
     <color name="primaryColor">#ffffff</color>
     <color name="primaryLightColor">#a00037</color>
     <color name="primaryDarkColor">#aaaaaa</color>
+    <color name="issue_open">#28a745</color>
+    <color name="issue_closed">#cb2431</color>
 </resources>

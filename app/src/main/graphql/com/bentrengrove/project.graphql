@@ -15,6 +15,8 @@ query ProjectQuery($owner: String!, $name: String!, $number: Int!, $limit: Int!)
                                     title
                                     body
                                     url
+                                    closed
+                                    number
                                 }
                                 ... on PullRequest {
                                     title
