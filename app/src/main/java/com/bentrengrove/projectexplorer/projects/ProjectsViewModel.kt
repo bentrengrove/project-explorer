@@ -15,7 +15,7 @@ sealed class ProjectsViewState {
     object Loading: ProjectsViewState()
     data class Loaded(val projects: ProjectsQuery.Projects): ProjectsViewState()
     object LoadedEmpty: ProjectsViewState()
-    data class Error(val error: Exception): ProjectsViewState()
+    data class Error(val error: Throwable): ProjectsViewState()
 }
 
 class ProjectsViewModel @Inject constructor(private val dataRepository: DataRepository): ViewModel() {
@@ -24,15 +24,9 @@ class ProjectsViewModel @Inject constructor(private val dataRepository: DataRepo
         get() = _projects
 
     fun setup(owner: String, repoName: String) {
-        dataRepository.apolloClient.query(
-            ProjectsQuery(owner, repoName, 25)
-        ).enqueue(object : ApolloCall.Callback<ProjectsQuery.Data>() {
-            override fun onFailure(e: ApolloException) {
-                Logger.e( "Could not load projects", e)
-                _projects.postValue(ProjectsViewState.Error(e))
-            }
-
-            override fun onResponse(response: Response<ProjectsQuery.Data>) {
+        dataRepository.loadProjects(owner, repoName) { result ->
+            if (result.isSuccess) {
+                val response = result.getOrNull()!!
                 Logger.d( "$response")
                 val projects = response.data()?.repository?.projects
                 if (projects != null) {
@@ -42,7 +36,11 @@ class ProjectsViewModel @Inject constructor(private val dataRepository: DataRepo
                         _projects.postValue(ProjectsViewState.LoadedEmpty)
                     }
                 }
+            } else {
+                val e = result.exceptionOrNull()!!
+                Logger.e( "Could not load projects", Exception(e))
+                _projects.postValue(ProjectsViewState.Error(e))
             }
-        })
+        }
     }
 }

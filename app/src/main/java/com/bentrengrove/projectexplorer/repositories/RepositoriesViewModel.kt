@@ -15,7 +15,7 @@ sealed class RepositoriesViewState {
     object Loading: RepositoriesViewState()
     data class Loaded(val repositories: List<RepositoriesQuery.Node>): RepositoriesViewState()
     object LoadedEmpty: RepositoriesViewState()
-    data class Error(val error: Exception): RepositoriesViewState()
+    data class Error(val error: Throwable): RepositoriesViewState()
 }
 
 class RepositoriesViewModel @Inject constructor(private val dataRepository: DataRepository) : ViewModel() {
@@ -24,15 +24,9 @@ class RepositoriesViewModel @Inject constructor(private val dataRepository: Data
         get() = _repositories
 
     init {
-        dataRepository.apolloClient.query(
-            RepositoriesQuery(100)
-        ).enqueue(object : ApolloCall.Callback<RepositoriesQuery.Data>() {
-            override fun onFailure(e: ApolloException) {
-                Logger.e( "Could not load", e)
-                _repositories.postValue(RepositoriesViewState.Error(e))
-            }
-
-            override fun onResponse(response: Response<RepositoriesQuery.Data>) {
+        dataRepository.loadRepositories { result ->
+            if (result.isSuccess) {
+                val response = result.getOrNull()!!
                 Logger.d( "$response ${response.data()?.viewer?.name}")
                 val nodes = response.data()?.viewer?.repositories?.nodes
                 val repositories = nodes?.filter { it?.projects?.totalCount != null && it.projects.totalCount > 0 }?.filterNotNull()
@@ -44,7 +38,9 @@ class RepositoriesViewModel @Inject constructor(private val dataRepository: Data
                         _repositories.postValue(RepositoriesViewState.LoadedEmpty)
                     }
                 }
+            } else {
+                _repositories.postValue(RepositoriesViewState.Error(result.exceptionOrNull()!!))
             }
-        })
+        }
     }
 }
