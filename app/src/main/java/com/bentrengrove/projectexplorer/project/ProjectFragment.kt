@@ -16,18 +16,23 @@ import androidx.navigation.fragment.navArgs
 import com.bentrengrove.ProjectQuery
 import com.bentrengrove.projectexplorer.R
 import com.google.android.material.tabs.TabLayoutMediator
+import dagger.hilt.android.AndroidEntryPoint
 import io.noties.markwon.Markwon
 import kotlinx.android.synthetic.main.error_layout.*
 import kotlinx.android.synthetic.main.project_fragment.*
 import kotlinx.android.synthetic.main.project_fragment.errorLayout
 import kotlinx.android.synthetic.main.project_fragment.loadingProgress
 import kotlinx.android.synthetic.main.simple_list_fragment.*
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class ProjectFragment: Fragment() {
-    private lateinit var viewModel: ProjectViewModel
+    @Inject lateinit var viewModelProvider: ViewModelProvider.Factory
+
+    private val viewModel by viewModels<ProjectViewModel> { viewModelProvider }
     private val args: ProjectFragmentArgs by navArgs()
     private var tabMediator: TabLayoutMediator? = null
-    lateinit var viewPagerAdapter: ProjectPagerAdapter
+    private lateinit var viewPagerAdapter: ProjectPagerAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.project_fragment, container, false)
@@ -39,7 +44,6 @@ class ProjectFragment: Fragment() {
         viewPagerAdapter = ProjectPagerAdapter(Markwon.create(viewPager.context), this::cardClicked)
         viewPager.adapter = viewPagerAdapter
 
-        viewModel = ViewModelProviders.of(this).get(ProjectViewModel::class.java)
         viewModel.setup(args.repoName, args.ownerName, args.number)
 
         viewModel.project.observe(viewLifecycleOwner, Observer {

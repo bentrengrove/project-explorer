@@ -24,7 +24,7 @@ import org.junit.runner.RunWith
 class NavigationTest {
     @Before
     fun setup() {
-        val idlingResource: IdlingResource = ApolloIdlingResource.create("ApolloIdlingResource", Data.apolloClient)
+        val idlingResource: IdlingResource = ApolloIdlingResource.create("ApolloIdlingResource", DataRepository.apolloClient)
         IdlingRegistry.getInstance().register(idlingResource)
     }
 

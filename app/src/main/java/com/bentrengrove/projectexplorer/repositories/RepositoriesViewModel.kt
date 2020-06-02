@@ -7,8 +7,9 @@ import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.bentrengrove.RepositoriesQuery
-import com.bentrengrove.projectexplorer.Data
+import com.bentrengrove.projectexplorer.DataRepository
 import com.bentrengrove.projectexplorer.util.Logger
+import javax.inject.Inject
 
 sealed class RepositoriesViewState {
     object Loading: RepositoriesViewState()
@@ -17,13 +18,13 @@ sealed class RepositoriesViewState {
     data class Error(val error: Exception): RepositoriesViewState()
 }
 
-class RepositoriesViewModel : ViewModel() {
+class RepositoriesViewModel @Inject constructor(private val dataRepository: DataRepository) : ViewModel() {
     private val _repositories: MutableLiveData<RepositoriesViewState> = MutableLiveData(RepositoriesViewState.Loading)
     val repositories: LiveData<RepositoriesViewState>
         get() = _repositories
 
     init {
-        Data.apolloClient.query(
+        dataRepository.apolloClient.query(
             RepositoriesQuery(100)
         ).enqueue(object : ApolloCall.Callback<RepositoriesQuery.Data>() {
             override fun onFailure(e: ApolloException) {

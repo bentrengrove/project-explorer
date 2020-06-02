@@ -6,17 +6,22 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.bentrengrove.projectexplorer.R
 import com.bentrengrove.projectexplorer.util.SimpleItemAdapter
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.error_layout.*
 import kotlinx.android.synthetic.main.simple_list_fragment.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
+@AndroidEntryPoint
 class RepositoriesFragment : Fragment(), CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
@@ -25,7 +30,8 @@ class RepositoriesFragment : Fragment(), CoroutineScope {
         fun newInstance() = RepositoriesFragment()
     }
 
-    private lateinit var viewModel: RepositoriesViewModel
+    @Inject lateinit var viewModelProvider: ViewModelProvider.Factory
+    private val viewModel: RepositoriesViewModel by viewModels { viewModelProvider }
     private val adapter = SimpleItemAdapter<RepositorySimpleItem>(this::itemSelected)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -34,7 +40,6 @@ class RepositoriesFragment : Fragment(), CoroutineScope {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(RepositoriesViewModel::class.java)
 
         recyclerView.adapter = adapter
         viewModel.repositories.observe(viewLifecycleOwner, Observer { state ->

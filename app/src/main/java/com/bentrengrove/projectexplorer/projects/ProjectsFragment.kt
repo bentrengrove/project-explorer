@@ -6,17 +6,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bentrengrove.projectexplorer.R
 import com.bentrengrove.projectexplorer.util.SimpleItemAdapter
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.error_layout.*
 import kotlinx.android.synthetic.main.simple_list_fragment.*
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class ProjectsFragment : Fragment() {
-    private lateinit var viewModel: ProjectsViewModel
+    @Inject lateinit var viewModelProvider: ViewModelProvider.Factory
+    private val viewModel by viewModels<ProjectsViewModel> { viewModelProvider }
+
     val args: ProjectsFragmentArgs by navArgs()
     private val adapter = SimpleItemAdapter(this::itemSelected)
 
@@ -27,7 +34,7 @@ class ProjectsFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(ProjectsViewModel::class.java)
+
         viewModel.setup(args.ownerName, args.repoName)
 
         recyclerView.adapter = adapter

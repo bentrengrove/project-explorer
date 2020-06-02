@@ -1,6 +1,5 @@
 package com.bentrengrove.projectexplorer.project
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,8 +7,9 @@ import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.bentrengrove.ProjectQuery
-import com.bentrengrove.projectexplorer.Data
+import com.bentrengrove.projectexplorer.DataRepository
 import com.bentrengrove.projectexplorer.util.Logger
+import javax.inject.Inject
 
 sealed class ProjectViewState {
     object Loading: ProjectViewState()
@@ -18,13 +18,13 @@ sealed class ProjectViewState {
     data class Error(val error: Exception): ProjectViewState()
 }
 
-class ProjectViewModel: ViewModel() {
+class ProjectViewModel @Inject constructor(private val dataRepository: DataRepository): ViewModel() {
     private val _project: MutableLiveData<ProjectViewState> = MutableLiveData(ProjectViewState.Loading)
     val project: LiveData<ProjectViewState>
         get() = _project
 
     fun setup(name: String, owner: String, number: Int) {
-        Data.apolloClient.query(
+        dataRepository.apolloClient.query(
             ProjectQuery(owner, name, number, 100)
         ).enqueue(object : ApolloCall.Callback<ProjectQuery.Data>() {
             override fun onFailure(e: ApolloException) {
