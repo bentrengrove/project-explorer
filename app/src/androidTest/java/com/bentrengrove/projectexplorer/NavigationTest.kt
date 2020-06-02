@@ -1,5 +1,6 @@
 package com.bentrengrove.projectexplorer
 
+import android.app.Instrumentation
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
@@ -13,8 +14,10 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import com.apollographql.apollo.test.espresso.ApolloIdlingResource
 import com.bentrengrove.projectexplorer.repositories.RepositoriesFragment
+import dagger.hilt.android.components.ApplicationComponent
 import org.hamcrest.Matchers
 import org.junit.Before
 import org.junit.Test
@@ -24,7 +27,9 @@ import org.junit.runner.RunWith
 class NavigationTest {
     @Before
     fun setup() {
-        val idlingResource: IdlingResource = ApolloIdlingResource.create("ApolloIdlingResource", DataRepository.apolloClient)
+        val instrumentation = InstrumentationRegistry.getInstrumentation()
+        val app = instrumentation.targetContext.applicationContext as MyApplication
+        val idlingResource: IdlingResource = ApolloIdlingResource.create("ApolloIdlingResource", app.apolloClient)
         IdlingRegistry.getInstance().register(idlingResource)
     }
 
