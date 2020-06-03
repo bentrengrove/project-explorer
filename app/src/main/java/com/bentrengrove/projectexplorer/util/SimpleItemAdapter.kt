@@ -23,7 +23,7 @@ interface SimpleItem {
     override fun equals(other: Any?): Boolean
 }
 
-class SimpleItemAdapter<T: SimpleItem>(val onItemClick: (T)->Unit): ListAdapter<T, SimpleItemAdapter.ViewHolder>(
+class SimpleItemAdapter<T: SimpleItem>(val onItemClick: (Int, T)->Unit): ListAdapter<T, SimpleItemAdapter.ViewHolder>(
     object : DiffUtil.ItemCallback<T>() {
         override fun areItemsTheSame(oldItem: T, newItem: T): Boolean {
             return oldItem.id == newItem.id
@@ -49,6 +49,6 @@ class SimpleItemAdapter<T: SimpleItem>(val onItemClick: (T)->Unit): ListAdapter<
             Picasso.get().load(item.imageUri).into(holder.itemView.imgIcon)
         }
 
-        holder.itemView.setOnClickListener { onItemClick(item as T) }
+        holder.itemView.setOnClickListener { onItemClick(position, item as T) }
     }
 }

@@ -4,12 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.SharedElementCallback
+import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.bentrengrove.projectexplorer.R
 import com.bentrengrove.projectexplorer.util.SimpleItemAdapter
@@ -73,8 +75,11 @@ class RepositoriesFragment : Fragment(), CoroutineScope {
         })
     }
 
-    private fun itemSelected(repositorySimpleItem: RepositorySimpleItem) {
+    private fun itemSelected(position: Int, repositorySimpleItem: RepositorySimpleItem) {
+        val viewHolder = recyclerView.findViewHolderForAdapterPosition(position) as? SimpleItemAdapter.ViewHolder ?: return
+        ViewCompat.setTransitionName(viewHolder.containerView, "shared_element_container")
+        val extras = FragmentNavigatorExtras(viewHolder.containerView to "shared_element_container")
         val action = RepositoriesFragmentDirections.actionRepositoriesFragmentToProjectsFragment(repositorySimpleItem.owner, repositorySimpleItem.title)
-        findNavController().navigate(action)
+        findNavController().navigate(action, extras)
     }
 }

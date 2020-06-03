@@ -16,6 +16,7 @@ import androidx.navigation.fragment.navArgs
 import com.bentrengrove.ProjectQuery
 import com.bentrengrove.projectexplorer.R
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.android.material.transition.MaterialContainerTransform
 import dagger.hilt.android.AndroidEntryPoint
 import io.noties.markwon.Markwon
 import kotlinx.android.synthetic.main.error_layout.*

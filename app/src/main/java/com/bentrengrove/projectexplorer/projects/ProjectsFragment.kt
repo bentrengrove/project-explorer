@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -14,9 +15,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bentrengrove.projectexplorer.R
 import com.bentrengrove.projectexplorer.util.SimpleItemAdapter
+import com.google.android.material.transition.MaterialContainerTransform
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.error_layout.*
-import kotlinx.android.synthetic.main.simple_list_fragment.*
+import kotlinx.android.synthetic.main.projects_fragment.*
+import kotlinx.android.synthetic.main.simple_list_item.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -27,15 +30,24 @@ class ProjectsFragment : Fragment() {
     val args: ProjectsFragmentArgs by navArgs()
     private val adapter = SimpleItemAdapter(this::itemSelected)
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        sharedElementEnterTransition = MaterialContainerTransform()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.simple_list_fragment, container, false)
+        return inflater.inflate(R.layout.projects_fragment, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
         viewModel.setup(args.ownerName, args.repoName)
+
+        ViewCompat.setTransitionName(repoRow, "shared_element_container")
+        lblText1.text = args.repoName
+        lblText2.text = args.ownerName
 
         recyclerView.adapter = adapter
         viewModel.projects.observe(viewLifecycleOwner, Observer { state ->
@@ -69,7 +81,7 @@ class ProjectsFragment : Fragment() {
         })
     }
 
-    private fun itemSelected(project: ProjectSimpleItem) {
+    private fun itemSelected(index: Int, project: ProjectSimpleItem) {
         val action = ProjectsFragmentDirections.actionProjectsFragmentToProjectFragment(args.ownerName, args.repoName, project.number, project.title)
         findNavController().navigate(action)
     }
