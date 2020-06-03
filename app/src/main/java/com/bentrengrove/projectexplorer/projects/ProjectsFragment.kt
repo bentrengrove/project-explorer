@@ -16,10 +16,12 @@ import androidx.navigation.fragment.navArgs
 import com.bentrengrove.projectexplorer.R
 import com.bentrengrove.projectexplorer.util.SimpleItemAdapter
 import com.google.android.material.transition.MaterialContainerTransform
+import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.error_layout.*
 import kotlinx.android.synthetic.main.projects_fragment.*
 import kotlinx.android.synthetic.main.simple_list_item.*
+import kotlinx.android.synthetic.main.simple_list_item.view.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -48,6 +50,7 @@ class ProjectsFragment : Fragment() {
         ViewCompat.setTransitionName(repoRow, "shared_element_container")
         lblText1.text = args.repoName
         lblText2.text = args.ownerName
+        Picasso.get().load(args.imageUrl).into(imgIcon)
 
         recyclerView.adapter = adapter
         viewModel.projects.observe(viewLifecycleOwner, Observer { state ->

@@ -27,6 +27,10 @@
         <action
             android:id="@+id/action_projectsFragment_to_projectFragment"
             app:destination="@id/projectFragment" />
+        <argument
+            android:name="imageUrl"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/projectFragment"

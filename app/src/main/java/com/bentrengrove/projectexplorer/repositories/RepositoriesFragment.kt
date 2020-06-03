@@ -79,7 +79,7 @@ class RepositoriesFragment : Fragment(), CoroutineScope {
         val viewHolder = recyclerView.findViewHolderForAdapterPosition(position) as? SimpleItemAdapter.ViewHolder ?: return
         ViewCompat.setTransitionName(viewHolder.containerView, "shared_element_container")
         val extras = FragmentNavigatorExtras(viewHolder.containerView to "shared_element_container")
-        val action = RepositoriesFragmentDirections.actionRepositoriesFragmentToProjectsFragment(repositorySimpleItem.owner, repositorySimpleItem.title)
+        val action = RepositoriesFragmentDirections.actionRepositoriesFragmentToProjectsFragment(repositorySimpleItem.owner, repositorySimpleItem.title, repositorySimpleItem.imageUri?.toString())
         findNavController().navigate(action, extras)
     }
 }
