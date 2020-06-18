@@ -32,8 +32,7 @@ class RepositoriesFragment : Fragment(), CoroutineScope {
         fun newInstance() = RepositoriesFragment()
     }
 
-    @Inject lateinit var viewModelProvider: ViewModelProvider.Factory
-    private val viewModel: RepositoriesViewModel by viewModels { viewModelProvider }
+    private val viewModel: RepositoriesViewModel by viewModels()
     private val adapter = SimpleItemAdapter<RepositorySimpleItem>(this::itemSelected)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

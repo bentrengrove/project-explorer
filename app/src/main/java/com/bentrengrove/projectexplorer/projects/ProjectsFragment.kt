@@ -26,8 +26,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class ProjectsFragment : Fragment() {
-    @Inject lateinit var viewModelProvider: ViewModelProvider.Factory
-    private val viewModel by viewModels<ProjectsViewModel> { viewModelProvider }
+    private val viewModel by viewModels<ProjectsViewModel>()
 
     val args: ProjectsFragmentArgs by navArgs()
     private val adapter = SimpleItemAdapter(this::itemSelected)
@@ -52,6 +51,7 @@ class ProjectsFragment : Fragment() {
         lblText2.text = args.ownerName
         Picasso.get().load(args.imageUrl).into(imgIcon)
 
+        requireParentFragment()
         recyclerView.adapter = adapter
         viewModel.projects.observe(viewLifecycleOwner, Observer { state ->
             when (state) {

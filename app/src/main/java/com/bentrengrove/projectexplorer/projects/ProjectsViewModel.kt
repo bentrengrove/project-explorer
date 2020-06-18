@@ -1,5 +1,6 @@
 package com.bentrengrove.projectexplorer.projects
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -18,7 +19,7 @@ sealed class ProjectsViewState {
     data class Error(val error: Throwable): ProjectsViewState()
 }
 
-class ProjectsViewModel @Inject constructor(private val dataRepository: DataRepository): ViewModel() {
+class ProjectsViewModel @ViewModelInject constructor(private val dataRepository: DataRepository): ViewModel() {
     private val _projects: MutableLiveData<ProjectsViewState> = MutableLiveData(ProjectsViewState.Loading)
     val projects: LiveData<ProjectsViewState>
         get() = _projects

@@ -28,9 +28,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class ProjectFragment: Fragment() {
-    @Inject lateinit var viewModelProvider: ViewModelProvider.Factory
-
-    private val viewModel by viewModels<ProjectViewModel> { viewModelProvider }
+    private val viewModel by viewModels<ProjectViewModel>()
     private val args: ProjectFragmentArgs by navArgs()
     private var tabMediator: TabLayoutMediator? = null
     private lateinit var viewPagerAdapter: ProjectPagerAdapter
