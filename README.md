@@ -5,8 +5,10 @@ It also demonstrates modern Android development techniques including:
 - ViewModel
 - LiveData
 - Navigation
-- MaterialComponents
+- MaterialComponents and transitions
 - RecyclerView with mulitple view types
+- Dagger Hilt
+- Testing with Dagger Hilt
 
 The GraphQL is handled by [Apollo](https://github.com/apollographql/apollo-android)
 
