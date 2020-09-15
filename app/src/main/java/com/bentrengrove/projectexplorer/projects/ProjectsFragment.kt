@@ -40,11 +40,6 @@ class ProjectsFragment : Fragment() {
     private lateinit var imgError: ImageView
     private lateinit var lblError: TextView
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        sharedElementEnterTransition = MaterialContainerTransform()
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.projects_fragment, container, false)
@@ -67,7 +62,6 @@ class ProjectsFragment : Fragment() {
 
         viewModel.setup(args.ownerName, args.repoName)
 
-        ViewCompat.setTransitionName(repoRow, "shared_element_container")
         lblText1.text = args.repoName
         lblText2.text = args.ownerName
         Picasso.get().load(args.imageUrl).into(imgIcon)

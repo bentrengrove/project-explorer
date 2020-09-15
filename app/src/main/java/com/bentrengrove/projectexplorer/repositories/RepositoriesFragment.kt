@@ -7,6 +7,16 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumnFor
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.viewinterop.viewModel
 import androidx.core.app.SharedElementCallback
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
@@ -17,84 +27,101 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.bentrengrove.RepositoriesQuery
 import com.bentrengrove.projectexplorer.R
+import com.bentrengrove.projectexplorer.theme.ProjectTheme
 import com.bentrengrove.projectexplorer.util.SimpleItemAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.ui.tooling.preview.Preview
 
 @AndroidEntryPoint
 class RepositoriesFragment : Fragment(), CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
 
-    companion object {
-        fun newInstance() = RepositoriesFragment()
-    }
-
-    private val viewModel: RepositoriesViewModel by viewModels()
-    private val adapter = SimpleItemAdapter<RepositorySimpleItem>(this::itemSelected)
-
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var loadingProgress: ProgressBar
-    private lateinit var errorLayout: ViewGroup
-    private lateinit var imgError: ImageView
-    private lateinit var lblError: TextView
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.simple_list_fragment, container, false)
-
-        recyclerView = view.findViewById(R.id.recyclerView)
-        loadingProgress = view.findViewById(R.id.loadingProgress)
-        errorLayout = view.findViewById(R.id.errorLayout)
-        imgError = view.findViewById(R.id.imgError)
-        lblError = view.findViewById(R.id.lblError)
-
-        return view
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        recyclerView.adapter = adapter
-        viewModel.repositories.observe(viewLifecycleOwner, Observer { state ->
-            when (state) {
-                is RepositoriesViewState.Loading -> {
-                    loadingProgress.isVisible = true
-                    errorLayout.isVisible = false
-                }
-                is RepositoriesViewState.Loaded -> {
-                    val items = state.repositories.map { it.toSimpleItem() }
-                    adapter.submitList(items)
-
-                    loadingProgress.isVisible = false
-                    errorLayout.isVisible = false
-                }
-                is RepositoriesViewState.LoadedEmpty -> {
-                    imgError.setImageResource(R.drawable.ic_list_black_24dp)
-                    lblError.text = getString(R.string.repositories_empty)
-
-                    loadingProgress.isVisible = false
-                    errorLayout.isVisible = true
-                }
-                is RepositoriesViewState.Error -> {
-                    imgError.setImageResource(R.drawable.ic_error_outline_black_24dp)
-                    lblError.text = state.error.message
-
-                    loadingProgress.isVisible = false
-                    errorLayout.isVisible = true
-                }
+        return ComposeView(requireContext()).apply {
+            setContent {
+                RepositoriesScreen(onItemClick = {
+                    itemSelected(it.toSimpleItem())
+                })
             }
-        })
+        }
     }
 
-    private fun itemSelected(position: Int, repositorySimpleItem: RepositorySimpleItem) {
-        val viewHolder = recyclerView.findViewHolderForAdapterPosition(position) as? SimpleItemAdapter.ViewHolder ?: return
-        ViewCompat.setTransitionName(viewHolder.containerView, "shared_element_container")
-        val extras = FragmentNavigatorExtras(viewHolder.containerView to "shared_element_container")
+    private fun itemSelected(repositorySimpleItem: RepositorySimpleItem) {
         val action = RepositoriesFragmentDirections.actionRepositoriesFragmentToProjectsFragment(repositorySimpleItem.owner, repositorySimpleItem.title, repositorySimpleItem.imageUri?.toString())
-        findNavController().navigate(action, extras)
+        findNavController().navigate(action)
     }
+}
+
+@Composable
+fun RepositoriesScreen(onItemClick: (RepositoriesQuery.Node) -> Unit) {
+    ProjectTheme {
+        val viewModel: RepositoriesViewModel = viewModel()
+        val state by viewModel.repositories.observeAsState()
+
+        when(state) {
+            is RepositoriesViewState.Loading -> {
+                LoadingProgress()
+            }
+            is RepositoriesViewState.Loaded -> {
+                RepositoriesList(repositories = (state as RepositoriesViewState.Loaded).repositories, onItemClick)
+            }
+            is RepositoriesViewState.LoadedEmpty -> {
+                EmptyListView()
+            }
+            is RepositoriesViewState.Error -> {
+                ErrorView(
+                    error = (state as RepositoriesViewState.Error).error.message ?: "Unknown error"
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun LoadingProgress() {
+    Text("Loading...")
+}
+
+@Composable
+fun RepositoriesList(repositories: List<RepositoriesQuery.Node>, onItemClick: (RepositoriesQuery.Node) -> Unit) {
+    LazyColumnFor(items = repositories) { item ->
+        RepositoryItem(item = item, onItemClick)
+    }
+}
+
+@Composable
+fun RepositoryItem(item: RepositoriesQuery.Node, onClick: (RepositoriesQuery.Node) -> Unit) {
+    Row(modifier = Modifier.fillMaxWidth().clickable(onClick = { onClick(item) })) {
+        Surface(shape = CircleShape,
+            modifier = Modifier.padding(8.dp).size(56.dp),
+            color = MaterialTheme.colors.primary) {}
+
+        Column(modifier = Modifier.gravity(Alignment.CenterVertically)) {
+            Text(text = item.name)
+            Text(text = item.owner.login)
+        }
+    }
+}
+
+@Composable
+fun EmptyListView() {
+    Text("There were no repositories found")
+}
+
+@Composable
+fun ErrorView(error: String) {
+    Text(text = error)
 }
