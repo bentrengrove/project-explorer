@@ -4,6 +4,7 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.DiffUtil
@@ -12,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bentrengrove.projectexplorer.R
 import com.squareup.picasso.Picasso
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.simple_list_item.view.*
 
 interface SimpleItem {
     val id: String
@@ -34,7 +34,11 @@ class SimpleItemAdapter<T: SimpleItem>(val onItemClick: (Int, T)->Unit): ListAda
         }
     })
 {
-    class ViewHolder(override val containerView: View): RecyclerView.ViewHolder(containerView), LayoutContainer
+    class ViewHolder(val containerView: View): RecyclerView.ViewHolder(containerView) {
+        val lblText1: TextView = containerView.findViewById(R.id.lblText1)
+        val lblText2: TextView = containerView.findViewById(R.id.lblText2)
+        val imgIcon: ImageView = containerView.findViewById(R.id.imgIcon)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.simple_list_item, parent, false)
@@ -43,10 +47,10 @@ class SimpleItemAdapter<T: SimpleItem>(val onItemClick: (Int, T)->Unit): ListAda
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
-        holder.itemView.lblText1.text = item.title
-        holder.itemView.lblText2.text = item.subtitle
+        holder.lblText1.text = item.title
+        holder.lblText2.text = item.subtitle
         if (item.imageUri != null) {
-            Picasso.get().load(item.imageUri).into(holder.itemView.imgIcon)
+            Picasso.get().load(item.imageUri).into(holder.imgIcon)
         }
 
         holder.itemView.setOnClickListener { onItemClick(position, item as T) }

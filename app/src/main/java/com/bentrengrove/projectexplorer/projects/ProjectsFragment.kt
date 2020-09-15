@@ -5,6 +5,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
@@ -13,16 +16,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.RecyclerView
 import com.bentrengrove.projectexplorer.R
 import com.bentrengrove.projectexplorer.util.SimpleItemAdapter
 import com.google.android.material.transition.MaterialContainerTransform
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.error_layout.*
-import kotlinx.android.synthetic.main.projects_fragment.*
-import kotlinx.android.synthetic.main.simple_list_item.*
-import kotlinx.android.synthetic.main.simple_list_item.view.*
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class ProjectsFragment : Fragment() {
@@ -31,6 +30,16 @@ class ProjectsFragment : Fragment() {
     val args: ProjectsFragmentArgs by navArgs()
     private val adapter = SimpleItemAdapter(this::itemSelected)
 
+    private lateinit var lblText1: TextView
+    private lateinit var lblText2: TextView
+    private lateinit var repoRow: ViewGroup
+    private lateinit var imgIcon: ImageView
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var loadingProgress: ProgressBar
+    private lateinit var errorLayout: ViewGroup
+    private lateinit var imgError: ImageView
+    private lateinit var lblError: TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedElementEnterTransition = MaterialContainerTransform()
@@ -38,7 +47,19 @@ class ProjectsFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.projects_fragment, container, false)
+        val view = inflater.inflate(R.layout.projects_fragment, container, false)
+
+        lblText1 = view.findViewById(R.id.lblText1)
+        lblText2 = view.findViewById(R.id.lblText2)
+        repoRow = view.findViewById(R.id.repoRow)
+        imgIcon = view.findViewById(R.id.imgIcon)
+        recyclerView = view.findViewById(R.id.recyclerView)
+        loadingProgress = view.findViewById(R.id.loadingProgress)
+        errorLayout = view.findViewById(R.id.errorLayout)
+        imgError = view.findViewById(R.id.imgError)
+        lblError = view.findViewById(R.id.lblError)
+
+        return view
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

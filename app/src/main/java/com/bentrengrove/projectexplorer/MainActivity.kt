@@ -2,11 +2,11 @@ package com.bentrengrove.projectexplorer
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlin.coroutines.CoroutineContext
@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope {
 
         val navController = findNavController(R.id.nav_host_fragment)
         val appBarConfiguration = AppBarConfiguration(navController.graph)
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
         toolbar.setupWithNavController(navController, appBarConfiguration)
     }
 }

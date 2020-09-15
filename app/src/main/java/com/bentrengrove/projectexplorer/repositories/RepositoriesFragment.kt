@@ -4,6 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.core.app.SharedElementCallback
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
@@ -13,11 +16,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.bentrengrove.projectexplorer.R
 import com.bentrengrove.projectexplorer.util.SimpleItemAdapter
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.error_layout.*
-import kotlinx.android.synthetic.main.simple_list_fragment.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
@@ -35,8 +37,22 @@ class RepositoriesFragment : Fragment(), CoroutineScope {
     private val viewModel: RepositoriesViewModel by viewModels()
     private val adapter = SimpleItemAdapter<RepositorySimpleItem>(this::itemSelected)
 
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var loadingProgress: ProgressBar
+    private lateinit var errorLayout: ViewGroup
+    private lateinit var imgError: ImageView
+    private lateinit var lblError: TextView
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.simple_list_fragment, container, false)
+        val view = inflater.inflate(R.layout.simple_list_fragment, container, false)
+
+        recyclerView = view.findViewById(R.id.recyclerView)
+        loadingProgress = view.findViewById(R.id.loadingProgress)
+        errorLayout = view.findViewById(R.id.errorLayout)
+        imgError = view.findViewById(R.id.imgError)
+        lblError = view.findViewById(R.id.lblError)
+
+        return view
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

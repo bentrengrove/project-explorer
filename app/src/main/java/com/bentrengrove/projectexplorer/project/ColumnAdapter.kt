@@ -4,6 +4,8 @@ import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -12,10 +14,6 @@ import com.bentrengrove.ProjectQuery
 import com.bentrengrove.projectexplorer.R
 import io.noties.markwon.Markwon
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.card_issue_viewholder.view.*
-import kotlinx.android.synthetic.main.card_note_viewholder.view.*
-import kotlinx.android.synthetic.main.card_note_viewholder.view.lblBody
-import kotlinx.android.synthetic.main.card_note_viewholder.view.lblFooter
 import java.lang.IllegalStateException
 
 private val CARD_DIFF = object : DiffUtil.ItemCallback<ProjectQuery.Node1>() {
@@ -29,33 +27,43 @@ private val CARD_DIFF = object : DiffUtil.ItemCallback<ProjectQuery.Node1>() {
 }
 
 class ColumnAdapter(val markwon: Markwon, val onItemClick: (ProjectQuery.Node1)->Unit): ListAdapter<ProjectQuery.Node1, RecyclerView.ViewHolder>(CARD_DIFF) {
-    inner class NoteViewHolder(override val containerView: View): RecyclerView.ViewHolder(containerView), LayoutContainer {
+    inner class NoteViewHolder(val containerView: View): RecyclerView.ViewHolder(containerView) {
+        val lblBody = containerView.findViewById<TextView>(R.id.lblBody)
+        val lblFooter = containerView.findViewById<TextView>(R.id.lblFooter)
+
         fun bind(item: ProjectQuery.Node1) {
-            markwon.setMarkdown(containerView.lblBody, item.note ?: "")
-            containerView.lblFooter.text = "Added by ${item.creator?.login ?: "ghost"}"
+            markwon.setMarkdown(lblBody, item.note ?: "")
+            lblFooter.text = "Added by ${item.creator?.login ?: "ghost"}"
         }
     }
 
-    class IssueViewHolder(override val containerView: View): RecyclerView.ViewHolder(containerView), LayoutContainer {
+    class IssueViewHolder(val containerView: View): RecyclerView.ViewHolder(containerView) {
+        val lblBody = containerView.findViewById<TextView>(R.id.lblBody)
+        val lblFooter = containerView.findViewById<TextView>(R.id.lblFooter)
+        val imgIcon = containerView.findViewById<ImageView>(R.id.imgIcon)
+
         fun bind(item: ProjectQuery.Node1) {
             val issue = item.content?.asIssue ?: return
-            containerView.lblBody.text = issue.title
-            containerView.lblFooter.text = "Added by ${item.creator?.login ?: "ghost"}"
+            lblBody.text = issue.title
+            lblFooter.text = "Added by ${item.creator?.login ?: "ghost"}"
             if (issue.closed) {
-                containerView.imgIcon.setImageResource(R.drawable.ic_done_black_24dp)
-                containerView.imgIcon.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(containerView.context, R.color.issue_closed))
+                imgIcon.setImageResource(R.drawable.ic_done_black_24dp)
+                imgIcon.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(containerView.context, R.color.issue_closed))
             } else {
-                containerView.imgIcon.setImageResource(R.drawable.ic_error_outline_black_24dp)
-                containerView.imgIcon.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(containerView.context, R.color.issue_open))
+                imgIcon.setImageResource(R.drawable.ic_error_outline_black_24dp)
+                imgIcon.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(containerView.context, R.color.issue_open))
             }
         }
     }
 
-    class PullRequestViewHolder(override val containerView: View): RecyclerView.ViewHolder(containerView), LayoutContainer {
+    class PullRequestViewHolder(val containerView: View): RecyclerView.ViewHolder(containerView) {
+        val lblBody = containerView.findViewById<TextView>(R.id.lblBody)
+        val lblFooter = containerView.findViewById<TextView>(R.id.lblFooter)
+
         fun bind(item: ProjectQuery.Node1) {
             val pr = item.content?.asPullRequest ?: return
-            containerView.lblBody.text = pr.title
-            containerView.lblFooter.text = "Added by ${item.creator?.login ?: "ghost"}"
+            lblBody.text = pr.title
+            lblFooter.text = "Added by ${item.creator?.login ?: "ghost"}"
         }
     }
 
