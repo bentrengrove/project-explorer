@@ -9,6 +9,7 @@ It also demonstrates modern Android development techniques including:
 - RecyclerView with mulitple view types
 - Dagger Hilt
 - Testing with Dagger Hilt
+- Compose (WIP migration)
 
 The GraphQL is handled by [Apollo](https://github.com/apollographql/apollo-android)
 
