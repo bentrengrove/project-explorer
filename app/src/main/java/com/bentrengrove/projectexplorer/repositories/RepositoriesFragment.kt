@@ -4,9 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.ColumnScope.align
+import androidx.compose.foundation.layout.RowScope.align
 import androidx.compose.foundation.layout.RowScope.gravity
 import androidx.compose.foundation.lazy.LazyColumnFor
 import androidx.compose.foundation.shape.CircleShape
@@ -19,12 +23,14 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.viewModel
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.ui.tooling.preview.Preview
+import com.bentrengrove.projectexplorer.RingOfDots
 import com.bentrengrove.projectexplorer.theme.ProjectTheme
 import dagger.hilt.android.AndroidEntryPoint
 import dev.chrisbanes.accompanist.coil.CoilImage
@@ -61,7 +67,7 @@ fun RepositoriesScreen(onItemClick: (RepositorySimpleItem) -> Unit) {
 
         when(state) {
             is RepositoriesViewState.Loading -> {
-                LoadingProgress()
+                LoadingProgress(Modifier.align(Alignment.CenterVertically).align(Alignment.CenterHorizontally))
             }
             is RepositoriesViewState.Loaded -> {
                 RepositoriesList(repositories = (state as RepositoriesViewState.Loaded).repositories.map { it.toSimpleItem() }, onItemClick)
@@ -79,8 +85,15 @@ fun RepositoriesScreen(onItemClick: (RepositorySimpleItem) -> Unit) {
 }
 
 @Composable
-fun LoadingProgress() {
-    CircularProgressIndicator(modifier = Modifier.size(48.dp).gravity(Alignment.CenterVertically))
+fun LoadingProgress(modifier: Modifier = Modifier) {
+    Column(modifier.wrapContentSize()) {
+        RingOfDots(modifier = Modifier.size(48.dp))
+        Text(
+            text = "LOADING",
+            style = MaterialTheme.typography.overline,
+            color = MaterialTheme.colors.primary
+        )
+    }
 }
 
 @Composable

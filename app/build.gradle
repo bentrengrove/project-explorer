@@ -74,7 +74,6 @@ dependencies {
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
     implementation "androidx.ui:ui-tooling:$compose_version"
-    implementation "com.google.android.material:compose-theme-adapter:$compose_version"
     implementation "dev.chrisbanes.accompanist:accompanist-coil:0.2.1"
 
     implementation "com.google.dagger:hilt-android:$dagger_hilt_version"
