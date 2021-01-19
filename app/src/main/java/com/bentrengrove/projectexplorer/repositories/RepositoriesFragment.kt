@@ -4,32 +4,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Text
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.ColumnScope.align
-import androidx.compose.foundation.layout.RowScope.align
-import androidx.compose.foundation.layout.RowScope.gravity
 import androidx.compose.foundation.lazy.LazyColumnFor
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.viewModel
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.ui.tooling.preview.Preview
 import com.bentrengrove.projectexplorer.RingOfDots
 import com.bentrengrove.projectexplorer.theme.ProjectTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -67,7 +60,7 @@ fun RepositoriesScreen(onItemClick: (RepositorySimpleItem) -> Unit) {
 
         when(state) {
             is RepositoriesViewState.Loading -> {
-                LoadingProgress(Modifier.align(Alignment.CenterVertically).align(Alignment.CenterHorizontally))
+                LoadingProgress(Modifier.wrapContentSize())
             }
             is RepositoriesViewState.Loaded -> {
                 RepositoriesList(repositories = (state as RepositoriesViewState.Loaded).repositories.map { it.toSimpleItem() }, onItemClick)
@@ -86,7 +79,7 @@ fun RepositoriesScreen(onItemClick: (RepositorySimpleItem) -> Unit) {
 
 @Composable
 fun LoadingProgress(modifier: Modifier = Modifier) {
-    Column(modifier.wrapContentSize()) {
+    Column(modifier) {
         RingOfDots(modifier = Modifier.size(48.dp))
         Text(
             text = "LOADING",
@@ -114,7 +107,7 @@ fun RepositoryItem(item: RepositorySimpleItem, onClick: (RepositorySimpleItem) -
                 color = MaterialTheme.colors.primary) {}
         }
 
-        Column(modifier = Modifier.gravity(Alignment.CenterVertically)) {
+        Column(modifier = Modifier.align(Alignment.CenterVertically)) {
             Text(text = item.title, style = MaterialTheme.typography.body1)
             Text(text = item.owner, style = MaterialTheme.typography.caption)
         }
