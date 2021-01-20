@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyColumnFor
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
@@ -91,8 +92,10 @@ fun LoadingProgress(modifier: Modifier = Modifier) {
 
 @Composable
 fun RepositoriesList(repositories: List<RepositorySimpleItem>, onItemClick: (RepositorySimpleItem) -> Unit) {
-    LazyColumnFor(items = repositories) { item ->
-        RepositoryItem(item = item, onItemClick)
+    LazyColumn {
+        items(repositories) { item ->
+            RepositoryItem(item = item, onItemClick)
+        }
     }
 }
 
