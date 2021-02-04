@@ -11,6 +11,15 @@ query ProjectsQuery($owner: String!, $name: String!, $limit: Int!) {
                 updatedAt
                 body
                 state
+                progress {
+                    enabled
+                    todoCount
+                    todoPercentage
+                    inProgressCount
+                    inProgressPercentage
+                    doneCount
+                    donePercentage
+                }
             }
         }
     }

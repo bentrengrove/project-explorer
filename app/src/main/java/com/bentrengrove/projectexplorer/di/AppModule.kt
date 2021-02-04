@@ -1,8 +1,8 @@
 package com.bentrengrove.projectexplorer.di
 
 import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.response.CustomTypeAdapter
-import com.apollographql.apollo.response.CustomTypeValue
+import com.apollographql.apollo.api.CustomTypeAdapter
+import com.apollographql.apollo.api.CustomTypeValue
 import com.bentrengrove.projectexplorer.BuildConfig
 import com.bentrengrove.projectexplorer.DataRepository
 import com.bentrengrove.type.CustomType
