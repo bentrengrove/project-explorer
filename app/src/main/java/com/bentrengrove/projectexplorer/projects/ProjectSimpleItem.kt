@@ -17,7 +17,8 @@ data class ProjectSimpleItem(
     override val imageUri: Uri?,
     val body: String?,
     val number: Int,
-    val state: ProjectState?
+    val state: ProjectState?,
+    val progress: ProjectsQuery.Progress?
 ) : SimpleItem {
     companion object {
         val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
@@ -30,5 +31,5 @@ fun ProjectsQuery.Node.toSimpleItem(): ProjectSimpleItem {
         .withLocale(Resources.getSystem().configuration.locales.get(0))
         .withZone(ZoneId.systemDefault())
         .format(date)
-    return ProjectSimpleItem(id, name, "Updated on $dateString", null, body, number, state)
+    return ProjectSimpleItem(id, name, "Updated on $dateString", null, body, number, state, progress)
 }

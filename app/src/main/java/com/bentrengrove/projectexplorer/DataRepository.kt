@@ -3,6 +3,8 @@ package com.bentrengrove.projectexplorer
 import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
+import com.apollographql.apollo.coroutines.await
+import com.apollographql.apollo.coroutines.toDeferred
 import com.apollographql.apollo.exception.ApolloException
 import com.bentrengrove.ProjectQuery
 import com.bentrengrove.ProjectsQuery
@@ -19,10 +21,10 @@ class DataRepository(private val httpClient: OkHttpClient, val apolloClient: Apo
         ).enqueue(createResult(callback))
     }
 
-    fun loadProjects(owner: String, repoName: String, callback: (Result<Response<ProjectsQuery.Data>>)->Unit) {
-        apolloClient.query(
+    suspend fun loadProjects(owner: String, repoName: String): Response<ProjectsQuery.Data> {
+        return apolloClient.query(
             ProjectsQuery(owner, repoName, 25)
-        ).enqueue(createResult(callback))
+        ).await()
     }
 
     fun loadProject(name: String, owner: String, number: Int, callback: (Result<Response<ProjectQuery.Data>>)->Unit) {

@@ -25,6 +25,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bentrengrove.projectexplorer.repositories.LoadingProgress
 import com.bentrengrove.projectexplorer.theme.ProjectTheme
+import com.bentrengrove.type.ProjectState
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -110,7 +111,7 @@ fun ProjectsList(projects: List<ProjectSimpleItem>, onClick: (ProjectSimpleItem)
 @Composable
 fun ProjectItemPreview() {
     ProjectTheme {
-        val item = ProjectSimpleItem("123", "Release", "Subtitle", null, "No description", 1, null)
+        val item = ProjectSimpleItem("123", "Release", "Subtitle", null, "No description", 1, ProjectState.OPEN, null)
         ProjectItem(item = item, onClick = {  })
     }
 }

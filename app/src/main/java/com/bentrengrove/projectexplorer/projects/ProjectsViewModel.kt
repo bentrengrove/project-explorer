@@ -4,12 +4,14 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.bentrengrove.ProjectsQuery
 import com.bentrengrove.projectexplorer.DataRepository
 import com.bentrengrove.projectexplorer.util.Logger
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 sealed class ProjectsViewState {
@@ -25,22 +27,20 @@ class ProjectsViewModel @ViewModelInject constructor(private val dataRepository:
         get() = _projects
 
     fun setup(owner: String, repoName: String) {
-        dataRepository.loadProjects(owner, repoName) { result ->
-            if (result.isSuccess) {
-                val response = result.getOrNull()!!
-                Logger.d( "$response")
-                val projects = response.data()?.repository?.projects
-                if (projects != null) {
-                    if (projects.nodes?.isNotEmpty() == true) {
-                        _projects.postValue(ProjectsViewState.Loaded(projects))
-                    } else {
-                        _projects.postValue(ProjectsViewState.LoadedEmpty)
-                    }
-                }
-            } else {
-                val e = result.exceptionOrNull()!!
-                Logger.e( "Could not load projects", Exception(e))
+        viewModelScope.launch {
+            val response = try {
+                dataRepository.loadProjects(owner, repoName)
+            } catch (e: ApolloException) {
                 _projects.postValue(ProjectsViewState.Error(e))
+                Logger.e( "Could not load projects", Exception(e))
+                return@launch
+            }
+
+            val projects = response.data?.repository?.projects
+            if (projects != null && projects.nodes?.isNotEmpty() == true) {
+                _projects.postValue(ProjectsViewState.Loaded(projects))
+            } else {
+                _projects.postValue(ProjectsViewState.LoadedEmpty)
             }
         }
     }
