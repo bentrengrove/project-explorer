@@ -9,6 +9,8 @@ query ProjectsQuery($owner: String!, $name: String!, $limit: Int!) {
                 name
                 number
                 updatedAt
+                body
+                state
             }
         }
     }

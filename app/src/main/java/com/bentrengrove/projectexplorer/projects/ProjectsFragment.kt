@@ -5,12 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -82,21 +80,28 @@ fun ProjectsScreen(onItemClick: (ProjectSimpleItem)->Unit) {
 
 @Composable
 fun ProjectItem(item: ProjectSimpleItem, onClick: (ProjectSimpleItem) -> Unit) {
+    val body = if (item.body.isNullOrEmpty()) "No description" else item.body
+
     Column(modifier = Modifier
         .fillMaxWidth()
         .clickable(onClick = { onClick(item) })
         .padding(8.dp)
     ) {
-        Text(text = item.title, style = MaterialTheme.typography.body1)
+        Text(text = item.title, style = MaterialTheme.typography.h6)
         Text(text = item.subtitle ?: "", style = MaterialTheme.typography.caption)
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(text = body, style = MaterialTheme.typography.body1)
     }
 }
 
 @Composable
-fun ProjectsList(items: List<ProjectSimpleItem>, onClick: (ProjectSimpleItem) -> Unit) {
-    LazyColumn() {
-        items(items) { item ->
-            ProjectItem(item = item, onClick = onClick)
+fun ProjectsList(projects: List<ProjectSimpleItem>, onClick: (ProjectSimpleItem) -> Unit) {
+    LazyColumn {
+        projects.forEach { project ->
+            item {
+                ProjectItem(item = project, onClick = onClick)
+                Divider()
+            }
         }
     }
 }
@@ -105,7 +110,7 @@ fun ProjectsList(items: List<ProjectSimpleItem>, onClick: (ProjectSimpleItem) ->
 @Composable
 fun ProjectItemPreview() {
     ProjectTheme {
-        val item = ProjectSimpleItem("123", "Release", "Subtitle", null, 1)
+        val item = ProjectSimpleItem("123", "Release", "Subtitle", null, "No description", 1, null)
         ProjectItem(item = item, onClick = {  })
     }
 }

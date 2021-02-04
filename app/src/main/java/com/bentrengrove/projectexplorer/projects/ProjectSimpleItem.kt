@@ -4,6 +4,7 @@ import android.content.res.Resources
 import android.net.Uri
 import com.bentrengrove.ProjectsQuery
 import com.bentrengrove.projectexplorer.util.SimpleItem
+import com.bentrengrove.type.ProjectState
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -14,7 +15,9 @@ data class ProjectSimpleItem(
     override val title: String,
     override val subtitle: String?,
     override val imageUri: Uri?,
-    val number: Int
+    val body: String?,
+    val number: Int,
+    val state: ProjectState?
 ) : SimpleItem {
     companion object {
         val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
@@ -27,5 +30,5 @@ fun ProjectsQuery.Node.toSimpleItem(): ProjectSimpleItem {
         .withLocale(Resources.getSystem().configuration.locales.get(0))
         .withZone(ZoneId.systemDefault())
         .format(date)
-    return ProjectSimpleItem(id, name, "Updated: $dateString", null, number)
+    return ProjectSimpleItem(id, name, "Updated on $dateString", null, body, number, state)
 }
