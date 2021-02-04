@@ -21,8 +21,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.viewModel
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.bentrengrove.projectexplorer.R
 import com.bentrengrove.projectexplorer.repositories.LoadingProgress
 import com.bentrengrove.projectexplorer.theme.ProjectTheme
 import com.bentrengrove.type.ProjectState
@@ -30,8 +32,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ProjectsFragment : Fragment() {
-    private val viewModel by viewModels<ProjectsViewModel>()
-
+    private val viewModel: ProjectsViewModel by viewModels()
     val args: ProjectsFragmentArgs by navArgs()
 
     override fun onCreateView(
@@ -46,12 +47,6 @@ class ProjectsFragment : Fragment() {
         }
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        viewModel.setup(args.ownerName, args.repoName)
-    }
-
     private fun itemSelected(project: ProjectSimpleItem) {
         val action = ProjectsFragmentDirections.actionProjectsFragmentToProjectFragment(args.ownerName, args.repoName, project.number, project.title)
         findNavController().navigate(action)
@@ -61,7 +56,7 @@ class ProjectsFragment : Fragment() {
 @Composable
 fun ProjectsScreen(onItemClick: (ProjectSimpleItem)->Unit) {
     ProjectTheme {
-        val viewModel: ProjectsViewModel = viewModel()
+        val viewModel = viewModel<ProjectsViewModel>()
         val state by viewModel.projects.observeAsState()
 
         when (state) {

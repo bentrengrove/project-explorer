@@ -1,16 +1,14 @@
 package com.bentrengrove.projectexplorer.projects
 
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.bentrengrove.ProjectsQuery
 import com.bentrengrove.projectexplorer.DataRepository
 import com.bentrengrove.projectexplorer.util.Logger
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,12 +19,16 @@ sealed class ProjectsViewState {
     data class Error(val error: Throwable): ProjectsViewState()
 }
 
-class ProjectsViewModel @ViewModelInject constructor(private val dataRepository: DataRepository): ViewModel() {
+@HiltViewModel
+class ProjectsViewModel @Inject constructor(private val savedStateHandle: SavedStateHandle, private val dataRepository: DataRepository): ViewModel() {
     private val _projects: MutableLiveData<ProjectsViewState> = MutableLiveData(ProjectsViewState.Loading)
     val projects: LiveData<ProjectsViewState>
         get() = _projects
 
-    fun setup(owner: String, repoName: String) {
+    init {
+        val owner: String = savedStateHandle.get<String>("ownerName")!!
+        val repoName: String = savedStateHandle.get<String>("repoName")!!
+
         viewModelScope.launch {
             val response = try {
                 dataRepository.loadProjects(owner, repoName)
