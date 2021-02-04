@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyColumnFor
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -103,7 +103,7 @@ fun RepositoriesList(repositories: List<RepositorySimpleItem>, onItemClick: (Rep
 fun RepositoryItem(item: RepositorySimpleItem, onClick: (RepositorySimpleItem) -> Unit) {
     Row(modifier = Modifier.fillMaxWidth().clickable(onClick = { onClick(item) })) {
         if (item.imageUri != null) {
-            CoilImage(data = item.imageUri.toString(), modifier = Modifier.padding(8.dp).size(56.dp).clip(CircleShape))
+            CoilImage(data = item.imageUri.toString(), modifier = Modifier.padding(8.dp).size(56.dp).clip(CircleShape), contentDescription = null)
         } else {
             Surface(shape = CircleShape,
                 modifier = Modifier.padding(8.dp).size(56.dp),

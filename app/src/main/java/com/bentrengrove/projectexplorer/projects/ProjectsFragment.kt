@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -33,7 +34,7 @@ class ProjectsFragment : Fragment() {
     private val viewModel by viewModels<ProjectsViewModel>()
 
     val args: ProjectsFragmentArgs by navArgs()
-    
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
