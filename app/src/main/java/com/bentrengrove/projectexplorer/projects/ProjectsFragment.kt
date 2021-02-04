@@ -68,7 +68,7 @@ fun ProjectsScreen(onItemClick: (ProjectSimpleItem)->Unit) {
                 ProjectsList(items, onItemClick)
             }
             ProjectsViewState.LoadedEmpty -> EmptyListView()
-            is ProjectsViewState.Error -> ErrorView(error = (state as ProjectsViewState.Error).error.message ?: "Unknown error")
+            is ProjectsViewState.Error -> ErrorView(error = (state as ProjectsViewState.Error).message ?: "Unknown error")
             null -> { }
         }
     }

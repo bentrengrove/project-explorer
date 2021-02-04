@@ -16,7 +16,7 @@ sealed class ProjectsViewState {
     object Loading: ProjectsViewState()
     data class Loaded(val projects: ProjectsQuery.Projects): ProjectsViewState()
     object LoadedEmpty: ProjectsViewState()
-    data class Error(val error: Throwable): ProjectsViewState()
+    data class Error(val error: Throwable? = null, val message: String? = error?.message): ProjectsViewState()
 }
 
 @HiltViewModel
@@ -26,8 +26,17 @@ class ProjectsViewModel @Inject constructor(private val savedStateHandle: SavedS
         get() = _projects
 
     init {
-        val owner: String = savedStateHandle.get<String>("ownerName")!!
-        val repoName: String = savedStateHandle.get<String>("repoName")!!
+        setup()
+    }
+
+    private fun setup() {
+        val owner: String? = savedStateHandle.get<String>("ownerName")
+        val repoName: String? = savedStateHandle.get<String>("repoName")
+
+        if (owner == null || repoName == null) {
+            _projects.postValue(ProjectsViewState.Error(message = "Missing arguments"))
+            return
+        }
 
         viewModelScope.launch {
             val response = try {
