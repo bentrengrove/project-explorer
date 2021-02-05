@@ -15,10 +15,11 @@ import com.bentrengrove.projectexplorer.util.Logger
 import okhttp3.OkHttpClient
 
 class DataRepository(private val httpClient: OkHttpClient, val apolloClient: ApolloClient) {
-    fun loadRepositories(callback: (Result<Response<RepositoriesQuery.Data>>)->Unit) {
-        apolloClient.query(
+    //TODO: These apis need to integrate paging, currently just using dummy numbers
+    suspend fun loadRepositories(): Response<RepositoriesQuery.Data> {
+        return apolloClient.query(
             RepositoriesQuery(100)
-        ).enqueue(createResult(callback))
+        ).await()
     }
 
     suspend fun loadProjects(owner: String, repoName: String): Response<ProjectsQuery.Data> {
@@ -27,21 +28,9 @@ class DataRepository(private val httpClient: OkHttpClient, val apolloClient: Apo
         ).await()
     }
 
-    fun loadProject(name: String, owner: String, number: Int, callback: (Result<Response<ProjectQuery.Data>>)->Unit) {
-        apolloClient.query(
+    suspend fun loadProject(name: String, owner: String, number: Int): Response<ProjectQuery.Data> {
+        return apolloClient.query(
             ProjectQuery(owner, name, number, 100)
-        ).enqueue(createResult(callback))
-    }
-
-    private fun <T> createResult(callback: (Result<Response<T>>)->Unit): ApolloCall.Callback<T> {
-        return object : ApolloCall.Callback<T>() {
-            override fun onFailure(e: ApolloException) {
-                callback(Result.failure(e))
-            }
-
-            override fun onResponse(response: Response<T>) {
-                callback(Result.success(response))
-            }
-        }
+        ).await()
     }
 }
