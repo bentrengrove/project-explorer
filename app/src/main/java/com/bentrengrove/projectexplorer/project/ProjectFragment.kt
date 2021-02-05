@@ -55,7 +55,7 @@ class ProjectFragment: Fragment() {
         viewPagerAdapter = ProjectPagerAdapter(Markwon.create(viewPager.context), this::cardClicked)
         viewPager.adapter = viewPagerAdapter
 
-        viewModel.setup(args.repoName, args.ownerName, args.number)
+        //viewModel.setup(args.repoName, args.ownerName, args.number)
 
         viewModel.project.observe(viewLifecycleOwner, Observer {
             when (it) {
