@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bentrengrove.ProjectQuery
 import com.bentrengrove.projectexplorer.R
-import io.noties.markwon.Markwon
 import kotlinx.android.extensions.LayoutContainer
 
 private val COLUMN_NODE_DIFF = object : DiffUtil.ItemCallback<ProjectQuery.Node>() {
@@ -21,9 +20,9 @@ private val COLUMN_NODE_DIFF = object : DiffUtil.ItemCallback<ProjectQuery.Node>
     }
 }
 
-class ProjectPagerAdapter(val markwon: Markwon, val onItemClick: (ProjectQuery.Node1)->Unit): ListAdapter<ProjectQuery.Node, ProjectPagerAdapter.ViewHolder>(COLUMN_NODE_DIFF) {
+class ProjectPagerAdapter(val onItemClick: (ProjectQuery.Node1)->Unit): ListAdapter<ProjectQuery.Node, ProjectPagerAdapter.ViewHolder>(COLUMN_NODE_DIFF) {
     inner class ViewHolder(override val containerView: View): RecyclerView.ViewHolder(containerView), LayoutContainer {
-        val adapter = ColumnAdapter(markwon, onItemClick)
+        val adapter = ColumnAdapter(onItemClick)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

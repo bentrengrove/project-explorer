@@ -13,14 +13,10 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="8dp">
-        <TextView
-            android:id="@+id/lblBody"
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/composeView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-            android:textColor="?attr/colorOnSurface"
-            android:layout_marginBottom="4dp"
-            tools:text="Note body\nThese can go over multiple lines."/>
+            android:layout_height="wrap_content" />
         <TextView
             android:id="@+id/lblFooter"
             android:layout_width="match_parent"

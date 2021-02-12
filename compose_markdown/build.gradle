@@ -54,7 +54,7 @@ dependencies {
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
     implementation "androidx.compose.ui:ui-tooling:$compose_version"
-    implementation "com.atlassian.commonmark:commonmark:0.15.2"
+    api "com.atlassian.commonmark:commonmark:0.15.2"
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'

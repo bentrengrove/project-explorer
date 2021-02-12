@@ -20,7 +20,6 @@ import com.bentrengrove.projectexplorer.R
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
-import io.noties.markwon.Markwon
 
 @AndroidEntryPoint
 class ProjectFragment: Fragment() {
@@ -52,7 +51,7 @@ class ProjectFragment: Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewPagerAdapter = ProjectPagerAdapter(Markwon.create(viewPager.context), this::cardClicked)
+        viewPagerAdapter = ProjectPagerAdapter(this::cardClicked)
         viewPager.adapter = viewPagerAdapter
 
         //viewModel.setup(args.repoName, args.ownerName, args.number)

@@ -6,14 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.compose.ui.platform.ComposeView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bentrengrove.ProjectQuery
+import com.bentrengrove.compose_markdown.Markdown
 import com.bentrengrove.projectexplorer.R
-import io.noties.markwon.Markwon
-import kotlinx.android.extensions.LayoutContainer
+import org.commonmark.node.Document
+import org.commonmark.parser.Parser
 import java.lang.IllegalStateException
 
 private val CARD_DIFF = object : DiffUtil.ItemCallback<ProjectQuery.Node1>() {
@@ -26,13 +28,17 @@ private val CARD_DIFF = object : DiffUtil.ItemCallback<ProjectQuery.Node1>() {
     }
 }
 
-class ColumnAdapter(val markwon: Markwon, val onItemClick: (ProjectQuery.Node1)->Unit): ListAdapter<ProjectQuery.Node1, RecyclerView.ViewHolder>(CARD_DIFF) {
+class ColumnAdapter(val onItemClick: (ProjectQuery.Node1)->Unit): ListAdapter<ProjectQuery.Node1, RecyclerView.ViewHolder>(CARD_DIFF) {
     inner class NoteViewHolder(val containerView: View): RecyclerView.ViewHolder(containerView) {
-        val lblBody = containerView.findViewById<TextView>(R.id.lblBody)
         val lblFooter = containerView.findViewById<TextView>(R.id.lblFooter)
+        val composeView = containerView.findViewById<ComposeView>(R.id.composeView)
+        val parser = Parser.builder().build()
 
         fun bind(item: ProjectQuery.Node1) {
-            markwon.setMarkdown(lblBody, item.note ?: "")
+            val markdown = parser.parse(item.note ?: "") as Document
+            composeView.setContent {
+                Markdown(document = markdown)
+            }
             lblFooter.text = "Added by ${item.creator?.login ?: "ghost"}"
         }
     }
@@ -44,6 +50,7 @@ class ColumnAdapter(val markwon: Markwon, val onItemClick: (ProjectQuery.Node1)-
 
         fun bind(item: ProjectQuery.Node1) {
             val issue = item.content?.asIssue ?: return
+
             lblBody.text = issue.title
             lblFooter.text = "Added by ${item.creator?.login ?: "ghost"}"
             if (issue.closed) {
