@@ -1,6 +1,8 @@
 package com.bentrengrove.compose_markdown
 
 import android.util.Log
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.text.appendInlineContent
 import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
@@ -27,22 +29,26 @@ private const val TAG_IMAGE_URL = "imageUrl"
 @Composable
 fun MarkdownPreview() {
     val parser = Parser.builder().build()
-    val root = parser.parse("#Hello\n\nThis is some text") as Document
+    val root = parser.parse("#### Heading\nThis is some *italic* and **bold** text") as Document
     Markdown(root)
 }
 
 @Composable
-fun Markdown(document: Document) {
-    MarkdownChild(document)
+fun Markdown(document: Document, modifier: Modifier = Modifier) {
+    Column(modifier) {
+        MarkdownChild(document)
+    }
 }
 
 @Composable
-fun MarkdownChild(parent: Node) {
+private fun MarkdownChild(parent: Node) {
     var child = parent.firstChild
     while (child != null) {
         when (child) {
             is Heading -> MarkdownHeading(child)
             is Paragraph -> MarkdownParagraph(child)
+            is BulletList -> MarkdownBulletList(bulletList = child)
+            is OrderedList -> MarkdownOrderedList(orderedList = child)
             else -> { Log.w(TAG, "${child::class.java} not currently supported") }
         }
 
@@ -51,7 +57,7 @@ fun MarkdownChild(parent: Node) {
 }
 
 @Composable
-fun MarkdownHeading(heading: Heading) {
+private fun MarkdownHeading(heading: Heading) {
     val style = when (heading.level) {
         1 -> MaterialTheme.typography.h1
         2 -> MaterialTheme.typography.h2
@@ -68,21 +74,70 @@ fun MarkdownHeading(heading: Heading) {
 }
 
 @Composable
-fun MarkdownParagraph(paragraph: Paragraph) {
+private fun MarkdownParagraph(paragraph: Paragraph) {
     val styledText = buildAnnotatedString {
         pushStyle(MaterialTheme.typography.body1.toSpanStyle())
         appendMarkdownChildren(paragraph, MaterialTheme.colors)
         pop()
     }
+
     MarkdownText(styledText, MaterialTheme.typography.body1)
 }
 
 @Composable
-fun MarkdownText(text: AnnotatedString, style: TextStyle, modifier: Modifier = Modifier) {
+private fun MarkdownText(text: AnnotatedString, style: TextStyle, modifier: Modifier = Modifier) {
     Text(text = text, style = style, modifier = modifier)
 }
 
-fun AnnotatedString.Builder.appendMarkdownChildren(
+@Composable
+private fun MarkdownBulletList(bulletList: BulletList, modifier: Modifier = Modifier) {
+    val marker = bulletList.bulletMarker
+    MarkdownListItems(bulletList, modifier = modifier) {
+        val text = buildAnnotatedString {
+            pushStyle(MaterialTheme.typography.body1.toSpanStyle())
+            append("$marker ")
+            appendMarkdownChildren(it, MaterialTheme.colors)
+            pop()
+        }
+        MarkdownText(text, MaterialTheme.typography.body1, modifier)
+    }
+}
+
+@Composable
+fun MarkdownOrderedList(orderedList: OrderedList, modifier: Modifier = Modifier) {
+    var number = orderedList.startNumber
+    val delimiter = orderedList.delimiter
+    MarkdownListItems(orderedList, modifier) {
+        val text = buildAnnotatedString {
+            pushStyle(MaterialTheme.typography.body1.toSpanStyle())
+            append("${number++}$delimiter ")
+            appendMarkdownChildren(it, MaterialTheme.colors)
+            pop()
+        }
+        MarkdownText(text, MaterialTheme.typography.body1, modifier)
+    }
+}
+
+@Composable
+private fun MarkdownListItems(listBlock: ListBlock, modifier: Modifier = Modifier, item: @Composable (node: Node) -> Unit) {
+    Column {
+        var listItem = listBlock.firstChild
+        while (listItem != null) {
+            var child = listItem.firstChild
+            while (child != null) {
+                when (child) {
+                    is BulletList -> MarkdownBulletList(child, modifier)
+                    is OrderedList -> MarkdownOrderedList(child, modifier)
+                    else -> item(child)
+                }
+                child = child.next
+            }
+            listItem = listItem.next
+        }
+    }
+}
+
+private fun AnnotatedString.Builder.appendMarkdownChildren(
     parent: Node, colors: Colors
 ) {
     var child = parent.firstChild
@@ -106,8 +161,11 @@ fun AnnotatedString.Builder.appendMarkdownChildren(
                 append(child.literal)
                 pop()
             }
-            is HardLineBreak -> {
+            is SoftLineBreak -> {
                 append("\n")
+            }
+            is HardLineBreak -> {
+                append("\n\n")
             }
             is Link -> {
                 val underline = SpanStyle(colors.primary, textDecoration = TextDecoration.Underline)
