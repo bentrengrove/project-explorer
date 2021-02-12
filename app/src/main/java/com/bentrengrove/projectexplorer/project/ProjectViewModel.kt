@@ -40,6 +40,7 @@ class ProjectViewModel @Inject constructor(private val savedStateHandle: SavedSt
             val response = try {
                 dataRepository.loadProject(repoName, owner, number)
             } catch (e: ApolloException) {
+                Logger.e("Could not load project: ${e.message}")
                 _project.postValue(ProjectViewState.Error(e))
                 return@launch
             }

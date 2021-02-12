@@ -47,6 +47,7 @@ class ProjectsViewModel @Inject constructor(private val savedStateHandle: SavedS
                 return@launch
             }
 
+            Logger.d("Loaded projects")
             val projects = response.data?.repository?.projects
             if (projects != null && projects.nodes?.isNotEmpty() == true) {
                 _projects.postValue(ProjectsViewState.Loaded(projects))

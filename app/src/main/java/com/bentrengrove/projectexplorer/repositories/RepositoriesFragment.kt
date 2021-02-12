@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -24,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.viewModel
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.bentrengrove.projectexplorer.RingOfDots
 import com.bentrengrove.projectexplorer.theme.ProjectTheme
 import dagger.hilt.android.AndroidEntryPoint
 import dev.chrisbanes.accompanist.coil.CoilImage
@@ -78,7 +78,7 @@ fun RepositoriesScreen(onItemClick: (RepositorySimpleItem) -> Unit) {
 @Composable
 fun LoadingProgress(modifier: Modifier = Modifier) {
     Column(modifier) {
-        RingOfDots(modifier = Modifier.size(48.dp))
+        CircularProgressIndicator(modifier = Modifier.size(48.dp))
         Text(
             text = "LOADING",
             style = MaterialTheme.typography.overline,
