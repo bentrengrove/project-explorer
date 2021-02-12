@@ -79,11 +79,6 @@ fun RepositoriesScreen(onItemClick: (RepositorySimpleItem) -> Unit) {
 fun LoadingProgress(modifier: Modifier = Modifier) {
     Column(modifier) {
         CircularProgressIndicator(modifier = Modifier.size(48.dp))
-        Text(
-            text = "LOADING",
-            style = MaterialTheme.typography.overline,
-            color = MaterialTheme.colors.primary
-        )
     }
 }
 

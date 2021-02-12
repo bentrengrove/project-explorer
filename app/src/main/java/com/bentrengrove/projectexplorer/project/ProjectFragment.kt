@@ -54,8 +54,6 @@ class ProjectFragment: Fragment() {
         viewPagerAdapter = ProjectPagerAdapter(this::cardClicked)
         viewPager.adapter = viewPagerAdapter
 
-        //viewModel.setup(args.repoName, args.ownerName, args.number)
-
         viewModel.project.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ProjectViewState.Loading -> {

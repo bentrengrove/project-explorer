@@ -8,10 +8,19 @@
     app:cardCornerRadius="8dp"
     app:cardElevation="4dp"
     app:cardBackgroundColor="?attr/colorSurface">
+    <ImageView
+        android:id="@+id/imgIcon"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="11dp"
+        android:src="@drawable/ic_baseline_notes_24"
+        android:contentDescription="note" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:layout_marginStart="24dp"
         android:padding="8dp">
         <androidx.compose.ui.platform.ComposeView
             android:id="@+id/composeView"
