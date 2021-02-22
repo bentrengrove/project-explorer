@@ -7,4 +7,5 @@
     <string name="projects_empty">This repository has no projects.</string>
     <string name="repositories_empty">This account has no repositories.</string>
     <string name="project_empty">This project has no content.</string>
+    <string name="title_activity_login">Login</string>
 </resources>

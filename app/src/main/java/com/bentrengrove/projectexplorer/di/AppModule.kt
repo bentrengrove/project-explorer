@@ -11,15 +11,18 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.components.SingletonComponent
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 import java.time.Instant
 import java.time.format.DateTimeFormatter
 import javax.inject.Singleton
 
 @Module
-@InstallIn(ApplicationComponent::class)
+@InstallIn(SingletonComponent::class)
 class AppModule {
     @Provides
     @Singleton
@@ -53,6 +56,15 @@ class AppModule {
             .serverUrl("https://api.github.com/graphql")
             .okHttpClient(httpClient)
             .addCustomTypeAdapter(CustomType.DATETIME, dateAdapter)
+            .build()
+    }
+
+    @Provides
+    fun provideGithubRetrofit(httpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .client(httpClient)
+            .baseUrl("https://github.com/")
+            .addConverterFactory(MoshiConverterFactory.create())
             .build()
     }
 
