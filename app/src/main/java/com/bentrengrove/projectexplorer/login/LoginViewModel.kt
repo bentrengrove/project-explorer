@@ -16,13 +16,12 @@ import javax.inject.Inject
 sealed class LoginViewState {
     object Loading: LoginViewState()
     data class CodeReceived(val code: String, val url: String): LoginViewState()
-    object Polling: LoginViewState()
     object Success: LoginViewState()
     data class Error(val exception: Exception): LoginViewState()
 }
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(val githubRetrofit: Retrofit): ViewModel() {
+class LoginViewModel @Inject constructor(githubRetrofit: Retrofit, val sessionManager: SessionManager): ViewModel() {
     private val _state = MutableStateFlow<LoginViewState>(LoginViewState.Loading)
     val state: StateFlow<LoginViewState> = _state
 
@@ -46,10 +45,8 @@ class LoginViewModel @Inject constructor(val githubRetrofit: Retrofit): ViewMode
         }
     }
 
-    fun startPolling() {
+    private fun startPolling() {
         val codeResponse = codeResponse ?: return
-
-        _state.value = LoginViewState.Polling
 
         viewModelScope.launch {
             val pollRequest = LoginDevicePollRequest(BuildConfig.GITHUB_CLIENT_ID, codeResponse.deviceCode)
@@ -71,6 +68,7 @@ class LoginViewModel @Inject constructor(val githubRetrofit: Retrofit): ViewMode
 
             if (accessCode != null) {
                 _state.value = LoginViewState.Success
+                sessionManager.login(accessCode)
             } else {
                 _state.value = LoginViewState.Error(TimeoutException())
             }

@@ -5,6 +5,7 @@ import com.apollographql.apollo.api.CustomTypeAdapter
 import com.apollographql.apollo.api.CustomTypeValue
 import com.bentrengrove.projectexplorer.BuildConfig
 import com.bentrengrove.projectexplorer.DataRepository
+import com.bentrengrove.projectexplorer.login.SessionManager
 import com.bentrengrove.type.CustomType
 import com.facebook.stetho.okhttp3.StethoInterceptor
 import dagger.Module
@@ -26,13 +27,13 @@ import javax.inject.Singleton
 class AppModule {
     @Provides
     @Singleton
-    fun provideOkHttp(): OkHttpClient {
+    fun provideOkHttp(sessionManager: SessionManager): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor { chain: Interceptor.Chain ->
                 val original: Request = chain.request()
                 val builder: Request.Builder =
                     original.newBuilder().method(original.method(), original.body())
-                builder.header("Authorization", "bearer ${BuildConfig.GITHUB_TOKEN}")
+                builder.header("Authorization", "bearer ${sessionManager.accessToken.value}")
                 chain.proceed(builder.build())
             }
             .addNetworkInterceptor(StethoInterceptor())
@@ -72,5 +73,11 @@ class AppModule {
     @Singleton
     fun provideDataRepository(okHttpClient: OkHttpClient, apolloClient: ApolloClient): DataRepository {
         return DataRepository(okHttpClient, apolloClient)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSessionManager(): SessionManager {
+        return SessionManager()
     }
 }

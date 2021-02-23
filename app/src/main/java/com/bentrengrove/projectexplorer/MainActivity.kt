@@ -8,13 +8,17 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.bentrengrove.projectexplorer.login.LoginActivity
+import com.bentrengrove.projectexplorer.login.SessionManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), CoroutineScope {
+    @Inject lateinit var sessionManager: SessionManager
+
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
 
@@ -27,7 +31,9 @@ class MainActivity : AppCompatActivity(), CoroutineScope {
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         toolbar.setupWithNavController(navController, appBarConfiguration)
 
-        val intent = Intent(this, LoginActivity::class.java)
-        //startActivity(intent)
+        if (sessionManager.accessToken.value.isNullOrEmpty()) {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+        }
     }
 }
